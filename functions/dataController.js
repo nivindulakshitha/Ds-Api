@@ -44,7 +44,27 @@ const findDocById = async (req, res) => {
     }
 }
 
+const updateLikes = async (req, res) => {
+    const { docId, likes } = req.body;
+
+    try {
+        const doc = await Doc.findById(docId);
+        if (!doc) {
+            return res.status(404).json({ "message": "No document found with that ID" });
+        }
+
+        doc.likes += likes;
+
+        const updatedDoc = await doc.save();
+        return res.status(200).json({ "message": "Likes successfully updated", "updatedDoc": updatedDoc });
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        return res.status(500).json({ "message": "An error occurred while updating the likes", "error": error.message });
+    }
+}
+
 module.exports = {
     registerDoc,
-    findDocById
+    findDocById,
+    updateLikes
 }
